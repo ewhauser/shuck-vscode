@@ -1,0 +1,13 @@
+.github/**
+.vscode/**
+scripts/**
+specs/**
+src/**
+out/**
+node_modules/**
+.gitignore
+.prettierignore
+.prettierrc.json
+eslint.config.mjs
+tsconfig*.json
+*.vsix

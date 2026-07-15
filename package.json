@@ -1,0 +1,234 @@
+{
+  "name": "shuck",
+  "displayName": "Shuck",
+  "description": "Fast shell linting, formatting, and editor intelligence powered by Shuck.",
+  "version": "0.1.0",
+  "publisher": "ewhauser",
+  "license": "MIT",
+  "homepage": "https://github.com/ewhauser/shuck-vscode#readme",
+  "bugs": {
+    "url": "https://github.com/ewhauser/shuck-vscode/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ewhauser/shuck-vscode.git"
+  },
+  "engines": {
+    "vscode": "^1.91.0"
+  },
+  "categories": [
+    "Linters",
+    "Formatters",
+    "Programming Languages"
+  ],
+  "keywords": [
+    "shell",
+    "bash",
+    "sh",
+    "zsh",
+    "ksh",
+    "linter",
+    "formatter",
+    "language server"
+  ],
+  "extensionKind": [
+    "workspace"
+  ],
+  "main": "./dist/extension.js",
+  "activationEvents": [
+    "onLanguage:shellscript",
+    "onLanguage:bash",
+    "onLanguage:sh",
+    "onLanguage:zsh",
+    "onLanguage:ksh",
+    "onCommand:shuck.startServer",
+    "onCommand:shuck.stopServer",
+    "onCommand:shuck.restartServer",
+    "onCommand:shuck.showOutput",
+    "onCommand:shuck.showServerStatus",
+    "onCommand:shuck.openSettings",
+    "workspaceContains:**/.shuck.toml",
+    "workspaceContains:**/shuck.toml"
+  ],
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": true
+    },
+    "virtualWorkspaces": {
+      "supported": false,
+      "description": "Shuck requires a filesystem-backed workspace for project discovery and configuration."
+    }
+  },
+  "contributes": {
+    "commands": [
+      {
+        "command": "shuck.startServer",
+        "title": "Start Language Server",
+        "category": "Shuck",
+        "icon": "$(play)"
+      },
+      {
+        "command": "shuck.stopServer",
+        "title": "Stop Language Server",
+        "category": "Shuck",
+        "icon": "$(debug-stop)"
+      },
+      {
+        "command": "shuck.restartServer",
+        "title": "Restart Language Server",
+        "category": "Shuck",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "shuck.showOutput",
+        "title": "Show Output",
+        "category": "Shuck"
+      },
+      {
+        "command": "shuck.showServerStatus",
+        "title": "Show Server Status",
+        "category": "Shuck"
+      },
+      {
+        "command": "shuck.openSettings",
+        "title": "Open Settings",
+        "category": "Shuck"
+      }
+    ],
+    "configuration": {
+      "title": "Shuck",
+      "order": 30,
+      "properties": {
+        "shuck.server.path": {
+          "type": "string",
+          "default": "shuck",
+          "scope": "machine",
+          "markdownDescription": "Path to the `shuck` executable. The extension expands a leading `~` and otherwise uses the extension host's `PATH`."
+        },
+        "shuck.server.arguments": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "server"
+          ],
+          "scope": "machine",
+          "markdownDescription": "Arguments passed to the Shuck language-server process."
+        },
+        "shuck.server.environment": {
+          "type": "object",
+          "default": {},
+          "scope": "machine",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "markdownDescription": "Environment variables added to the Shuck process. Values are never written to the extension log."
+        },
+        "shuck.server.logFile": {
+          "type": "string",
+          "default": "",
+          "scope": "machine",
+          "markdownDescription": "Optional native Shuck server log file. Logs can contain source text and local paths; review them before sharing."
+        },
+        "shuck.server.logLevel": {
+          "type": "string",
+          "enum": [
+            "error",
+            "warn",
+            "info",
+            "debug",
+            "trace"
+          ],
+          "default": "warn",
+          "scope": "machine",
+          "markdownDescription": "Native Shuck server log level. Changing this setting restarts the server."
+        },
+        "shuck.fixAll": {
+          "type": "boolean",
+          "default": true,
+          "scope": "resource",
+          "markdownDescription": "Enable Shuck's `source.fixAll.shuck` code action."
+        },
+        "shuck.unsafeFixes": {
+          "type": "boolean",
+          "default": false,
+          "scope": "resource",
+          "markdownDescription": "Offer fixes that can change script behavior and require review."
+        },
+        "shuck.showSyntaxErrors": {
+          "type": "boolean",
+          "default": false,
+          "scope": "resource",
+          "markdownDescription": "Show parser recovery errors as diagnostics in addition to lint diagnostics."
+        },
+        "shuck.workspaceSymbols.enabled": {
+          "type": "boolean",
+          "default": true,
+          "scope": "resource",
+          "markdownDescription": "Enable workspace-wide shell symbol search."
+        },
+        "shuck.workspaceSymbols.maxFiles": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100000,
+          "default": 5000,
+          "scope": "resource",
+          "markdownDescription": "Maximum number of closed shell files Shuck indexes for workspace symbols."
+        },
+        "shuck.completion.includeRuntimeNames": {
+          "type": "boolean",
+          "default": true,
+          "scope": "resource",
+          "markdownDescription": "Include runtime-provided shell names in completion results."
+        },
+        "shuck.completion.includeKeywords": {
+          "type": "boolean",
+          "default": true,
+          "scope": "resource",
+          "markdownDescription": "Include shell keywords in command-position completion results."
+        },
+        "shuck.trace.server": {
+          "type": "string",
+          "enum": [
+            "off",
+            "messages",
+            "verbose"
+          ],
+          "default": "off",
+          "scope": "window",
+          "markdownDescription": "Trace LSP messages between VS Code and Shuck. Traces can contain source text and local paths."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "watch": "node scripts/build.mjs --watch",
+    "package": "npm run build && vsce package --out shuck-${npm_package_version}.vsix",
+    "vscode:prepublish": "npm run build",
+    "typecheck": "tsc --noEmit",
+    "compile-tests": "tsc -p tsconfig.test.json",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test:unit": "npm run compile-tests && node --test out/test/unit/*.test.js",
+    "test:integration": "npm run build && npm run compile-tests && node out/test/runTest.js",
+    "test": "npm run test:unit && npm run test:integration"
+  },
+  "dependencies": {
+    "vscode-languageclient": "10.1.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "@types/node": "22.20.1",
+    "@types/vscode": "1.91.0",
+    "@vscode/test-electron": "3.0.0",
+    "@vscode/vsce": "3.9.2",
+    "esbuild": "0.28.1",
+    "eslint": "10.7.0",
+    "prettier": "3.9.5",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.64.0"
+  }
+}

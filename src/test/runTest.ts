@@ -1,0 +1,25 @@
+import * as path from "node:path";
+import { runTests } from "@vscode/test-electron";
+
+async function main(): Promise<void> {
+  const extensionDevelopmentPath = path.resolve(__dirname, "../..");
+  const extensionTestsPath = path.resolve(__dirname, "suite", "index");
+  const testWorkspace = path.resolve(
+    extensionDevelopmentPath,
+    "src",
+    "test",
+    "fixtures",
+    "workspace",
+  );
+
+  await runTests({
+    extensionDevelopmentPath,
+    extensionTestsPath,
+    launchArgs: [testWorkspace, "--disable-extensions"],
+  });
+}
+
+main().catch((error: unknown) => {
+  console.error(error);
+  process.exitCode = 1;
+});
